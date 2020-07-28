@@ -10,6 +10,17 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "socketio": "^1.0.0"
+    "helmet": "^3.23.3",
+    "socket.io": "^2.3.0",
+    "socketio": "^1.0.0",
+    "uuid": "^8.3.0"
+  },
+  "repository": {
+    "url": "https://github.com/laszlobalint/websocket",
+    "type": "git"
+  },
+  "engines": {
+    "node": "12.16.0",
+    "npm": "6.14.4"
   }
 }
