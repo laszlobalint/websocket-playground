@@ -7,20 +7,24 @@ function draw() {
   context.translate(cameraX, cameraY);
 
   players.forEach((p) => {
-    context.beginPath();
-    context.fillStyle = p.color;
-    context.arc(p.locX, p.locY, p.radius, 0, Math.PI * 2);
-    context.fill();
-    context.lineWidth = 3;
-    context.strokeStyle = 'rgb(0, 255, 0)';
-    context.stroke();
+    if (p.locX && p.locY && p.radius && p.color) {
+      context.beginPath();
+      context.fillStyle = p.color;
+      context.arc(p.locX, p.locY, p.radius, 0, Math.PI * 2);
+      context.fill();
+      context.lineWidth = 3;
+      context.strokeStyle = p.stroke;
+      context.stroke();
+    }
   });
 
   orbs.forEach((orb) => {
-    context.beginPath();
-    context.fillStyle = orb.color;
-    context.arc(orb.locX, orb.locY, orb.radius, 0, Math.PI * 2);
-    context.fill();
+    if (orb.locX && orb.locY && orb.radius && orb.color) {
+      context.beginPath();
+      context.fillStyle = orb.color;
+      context.arc(orb.locX, orb.locY, orb.radius, 0, Math.PI * 2);
+      context.fill();
+    }
   });
 
   requestAnimationFrame(draw);

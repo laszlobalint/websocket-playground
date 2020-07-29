@@ -8,6 +8,7 @@ class PlayerPublicData {
     this.locY = Math.floor(settings.worldHeight * Math.random() + 100);
     this.radius = settings.defaultSize;
     this.color = this.getRandomColor();
+    this.stroke = this.getRandomColor();
     this.score = 0;
     this.orbsAbsorbed = 0;
   }

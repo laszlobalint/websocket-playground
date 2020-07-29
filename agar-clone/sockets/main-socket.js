@@ -10,17 +10,18 @@ const Orb = require('./classes/Orb');
 let orbs = [];
 let players = [];
 let settings = {
-  defaultOrbs: 500,
-  defaultSpeed: 6,
+  defaultOrbs: 5000,
+  defaultSpeed: 8,
   defaultSize: 6,
   defaultZoom: 1.5,
-  worldWidth: 500,
-  worldHeight: 500,
+  worldWidth: 3000,
+  worldHeight: 3000,
 };
 
 initGame();
 
 setInterval(() => {
+  checkPlayersLocation();
   if (players.length > 0) {
     io.to('game').emit('tock', {
       players,
@@ -36,6 +37,12 @@ io.sockets.on('connect', (socket) => {
     let playerConfig = new PlayerConfiguration(settings);
     let playerData = new PlayerPublicData(data.playerName, settings);
     player = new Player(socket.id, playerConfig, playerData);
+    players.push(playerData);
+
+    socket.emit('initReturn', {
+      orbs,
+      playerUid: player.playerData.uid,
+    });
 
     setInterval(() => {
       socket.emit('tickTock', {
@@ -43,12 +50,6 @@ io.sockets.on('connect', (socket) => {
         playerY: player.playerData.locY,
       });
     }, 33);
-
-    socket.emit('initReturn', {
-      orbs,
-      playerUid: player.playerData.uid,
-    });
-    players.push(playerData);
   });
 
   socket.on('tick', (data) => {
@@ -102,6 +103,15 @@ function initGame() {
   for (let i = 0; i < settings.defaultOrbs; i++) {
     orbs.push(new Orb(settings));
   }
+}
+
+function checkPlayersLocation() {
+  players.forEach((p) => {
+    if (!p.locX || !p.locY) {
+      p.locX = Math.floor(settings.worldWidth * Math.random() + 100);
+      p.locY = Math.floor(settings.worldHeight * Math.random() + 100);
+    }
+  });
 }
 
 function getLeaderBoard() {

@@ -3,6 +3,11 @@ body {
   overflow: hidden;
 }
 
+canvas {
+  display: block;
+  background-color: white;
+}
+
 h3 {
   margin-top: 10px;
 }
@@ -68,10 +73,6 @@ h3 {
   border-right: solid 2px black;
 }
 
-canvas {
-  display: block;
-  background-color: white;
-}
 .modal-sm {
   min-width: 500px;
   width: 30%;
