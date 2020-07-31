@@ -1,4 +1,10 @@
 const os = require('os');
+const io = require('socket.io-client');
+const socket = io('http://127.0.0.1:8181');
+
+socket.on('connection', () => {
+  console.log('Connected to socket server...');
+});
 
 async function performanceData() {
   return new Promise(async (resolve, reject) => {
