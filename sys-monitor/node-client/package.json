@@ -4,12 +4,14 @@
   "description": "Performance system monitoring using Socket.IO, ReactJS and MongoDB.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js",
+    "test": "cross-env NODE_ENV=test nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cross-env": "^7.0.2",
     "farmhash": "^3.1.0",
     "socket.io-client": "^2.3.0"
   },

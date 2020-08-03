@@ -1,14 +1,44 @@
 const os = require('os');
 const io = require('socket.io-client');
 const socket = io('http://127.0.0.1:8181');
+const Constants = require('./constants');
 
-socket.on('connection', () => {
-  console.log('Connected to socket server...');
+socket.on('connect', () => {
+  const networkInterface = os.networkInterfaces();
+  let macAddress;
+  for (let key in networkInterface) {
+    if (process.env.NODE_ENV === 'test') {
+      macAddress = Math.floor(Math.random() * 3) + 1;
+      break;
+    } else {
+      if (!networkInterface[key][0].internal) {
+        networkInterface[key][0].mac === Constants.NO_MAC_ADDRESS
+          ? (macAddress = Math.random().toString(36).substr(2, 15))
+          : (macAddress = networkInterface[key][0].mac);
+        break;
+      }
+    }
+  }
+
+  performanceData().then((allPerformanceData) => {
+    socket.emit('initPerfData', { ...allPerformanceData, macA: macAddress });
+    socket.emit('clientAuth', Constants.APP_KEY);
+  });
+
+  let perfDataInterval = setInterval(() => {
+    performanceData().then((allPerformanceData) => {
+      socket.emit('perfData', { ...allPerformanceData, macA: macAddress });
+    });
+  }, 1000);
+
+  socket.on('disconnect', () => {
+    clearInterval(perfDataInterval);
+  });
 });
 
 async function performanceData() {
   return new Promise(async (resolve, reject) => {
-    const osType = (os.type() === 'Darwin' ? 'Mac' : os.type()) === 'Windows_NT' ? 'Windows' : os.type();
+    const osType = (os.type() === 'Darwin' ? Constants.MAC : os.type()) === 'Windows_NT' ? Constants.WINDOWS : os.type();
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
@@ -18,8 +48,9 @@ async function performanceData() {
     const numCores = os.cpus().length;
     const cpuSpeed = os.cpus()[0].speed;
     const cpuLoad = await getCpuLoad();
+    const isActive = true;
 
-    resolve({ osType, totalMem, freeMem, usedMem, memUsage, upTime, cpuModel, numCores, cpuSpeed, cpuLoad });
+    resolve({ osType, totalMem, freeMem, usedMem, memUsage, upTime, cpuModel, numCores, cpuSpeed, cpuLoad, isActive });
   });
 }
 
@@ -50,7 +81,3 @@ function getCpuLoad() {
     }, 100);
   });
 }
-
-performanceData().then((allPerformanceData) => {
-  console.log(allPerformanceData);
-});

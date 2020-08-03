@@ -6,7 +6,6 @@ const helmet = require('helmet');
 const io_redis = require('socket.io-redis');
 const farmhash = require('farmhash');
 const socketMain = require('./socket-main');
-const expressMain = require('./express-main');
 
 const PORT = 8181;
 const NUM_PROCESSES = require('os').cpus().length;
